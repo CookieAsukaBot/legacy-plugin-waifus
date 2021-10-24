@@ -56,14 +56,24 @@ module.exports = {
         try {
             // Obtener imagen
             let res;
-            if (args == "uwu") {
-                res = await Booru.search(randomBooru({ nsfw: true }), [], { limit: 1, random: true });
-            } else if (args == "owo") {
-                res = await Booru.search(randomBooru({ nsfw: false }), [], { limit: 1, random: true });
-            } else {
-                res = await Booru.search('safebooru', [], { limit: 1, random: true, page: Math.floor(Math.random() * 100) });
+
+            switch (args.toString()) {
+                case 'uwu':
+                    res = await Booru.search(randomBooru({ nsfw: true }), [], { limit: 1, random: true });
+                    break;
+                case 'owo':
+                    res = await Booru.search(randomBooru({ nsfw: false }), [], { limit: 1, random: true });
+                    break;
+
+                default:
+                    res = await Booru.search('safebooru', [], {
+                        limit: 1,
+                        random: true,
+                        page: Math.floor(Math.random() * 100)
+                    });
+                    break;
             };
-    
+
             // Mejorar modelo
             const image = {
                 id: res.posts[0].id,
