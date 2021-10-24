@@ -51,7 +51,7 @@ function randomBooru (options) {
 module.exports = {
 	name: 'waifu',
 	description: 'Obten un arte de una Waifu aleatoria.',
-    aliases: [],
+    aliases: ['waifus'],
 	async execute (message, args) {
         try {
             // Obtener imagen
@@ -86,8 +86,18 @@ module.exports = {
 
             // Agregar fuentes
             let description = `ID: ${image.id}`;
-            if (image.source && Array.isArray(image.source)) description += image.source.forEach((source, index) => `[Fuente (${index + 1}/${image.source.length})](${source})`);
-            if (image.source && !Array.isArray(image.source)) description = `ID: [${image.id}](${image.source})`;
+
+            // Si es un Array
+            if (image.source && Array.isArray(image.source)) {
+                description += image.source.forEach((source, index) =>
+                    `[Fuente (${index + 1}/${image.source.length})](${source})`
+                );
+            };
+
+            // Si es un String
+            if (image.source && !Array.isArray(image.source)) {
+                description = `ID: [${image.id}](${image.source})`;
+            };
 
             // Embed
             let embed = new Discord.MessageEmbed()
