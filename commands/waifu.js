@@ -1,19 +1,30 @@
 const Discord = require('discord.js');
 const Booru = require('booru');
 
-const banned = [
+const bannedBoorus = [
     'derpibooru.org', // Furry
-    'realbooru', // Real
+    'realbooru.com', // Real
     'hypnohub.net', // WTF?
-    'e926.net', // Furry
-    'e621.net' // Furry
+    'e926.net', // Furry still wtf
+    'e621.net', // Furry
+    'tbib.org' // Furry
+];
+
+const safeBoorus = [
+    'safebooru',
+    'gelbooru', // has api rate problems?
+    'kc'
+];
+
+const bannedTags = [
+    '-uncensored', '-condom', '-pussy', '-sex', '-penis'
 ];
 
 const getBooru = () => {
     // Obtener
     return Object.entries(Booru.sites).map(booru => {
         // Remove shit
-        if (banned.includes(booru[1].domain)) return;
+        if (bannedBoorus.includes(booru[1].domain)) return;
         else return booru;
     });
 };
@@ -45,19 +56,19 @@ function randomBooru (options) {
     const random = cleanBoorus[Math.floor(Math.random() * cleanBoorus.length)];
 
     // Devolver
-    return random[0].toString();
+    return random[1].aliases[0].toString();
 };
 
 module.exports = {
 	name: 'waifu',
 	description: 'Obten un arte de una Waifu aleatoria.',
-    aliases: ['waifus'],
+    aliases: ['w', 'waifus'],
 	async execute (message, args) {
         try {
             // Obtener imagen
             let res;
 
-            switch (args.toString()) {
+            switch (args.join(" ")) {
                 case 'uwu':
                     res = await Booru.search(randomBooru({ nsfw: true }), [], { limit: 1, random: true });
                     break;
@@ -69,7 +80,7 @@ module.exports = {
                     res = await Booru.search('safebooru', [], {
                         limit: 1,
                         random: true,
-                        page: Math.floor(Math.random() * 100)
+                        page: Math.floor(Math.random() * 500)
                     });
                     break;
             };
@@ -77,26 +88,28 @@ module.exports = {
             // Mejorar modelo
             const image = {
                 id: res.posts[0].id,
-                url: res.posts[0].fileUrl,
-                rating: res.posts[0].rating,
-                createdAt: res.posts[0].createdAt,
                 domain: res.posts[0].booru.domain,
-                source: res.posts[0].source
+                url: res.posts[0].fileUrl,
+                tags: res.posts[0].tags,
+                rating: res.posts[0].rating,
+                source: res.posts[0].source,
+                createdAt: res.posts[0].createdAt
             };
 
-            // Agregar fuentes
-            let description = `ID: ${image.id}`;
+            let description = ``;
+            // Agregar tags
+            if (image.tags != undefined) description += `${image.tags.slice(0, 7).join(' ')}`;
 
+            // Agregar fuentes
             // Si es un Array
             if (image.source && Array.isArray(image.source)) {
                 description += image.source.forEach((source, index) =>
-                    `[Fuente (${index + 1}/${image.source.length})](${source})`
+                    `\n[Fuente (${index + 1}/${image.source.length})](${source})`
                 );
             };
-
             // Si es un String
             if (image.source && !Array.isArray(image.source)) {
-                description = `ID: [${image.id}](${image.source})`;
+                description += `\n[Fuente](${image.source})`;
             };
 
             // Embed
@@ -105,8 +118,7 @@ module.exports = {
                 .setAuthor(`Random Waifu para ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
                 .setDescription(description)
                 .setImage(image.url)
-                .setFooter(`${image.domain}`)
-                .setTimestamp(image.createdAt);
+                .setFooter(`${image.domain} | ${image.id}`);
 
             // Responder
             message.channel.send({ embeds: [embed] });
