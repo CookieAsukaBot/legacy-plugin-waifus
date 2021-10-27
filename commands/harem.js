@@ -40,6 +40,9 @@ module.exports = {
         message.channel.send({
             embeds: [embed]
         }).then(async msg => {
+            // Comprobar cantidad de Waifus
+            if (waifus.length == 1) return;
+
             await msg.react('⬅');
             // await msg.react('💘'); // Marcar como Waifu principal
             await msg.react('➡');
