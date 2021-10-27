@@ -121,7 +121,23 @@ const WAIFU_CLAIM = async (data) => {
     };
 };
 
+// Divorciar
+const WAIFU_DIVORCE = async (id, user) => {
+    // Eliminar
+    await Waifu.deleteOne({ id, userID: user })
+        then(() => {
+            return true;
+        }).catch(error => {
+            return false;
+            console.error(error)
+        });
+};
+
+// Regalar
+const WAIFU_GIVE = async () => {};
+
 module.exports = {
     WAIFU_GET_RANDOM,
-    WAIFU_CLAIM
+    WAIFU_CLAIM,
+    WAIFU_DIVORCE
 };
