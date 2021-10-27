@@ -37,6 +37,7 @@ module.exports = {
         if (!rolledBy.rolls >= 1) return message.channel.send({
             content: `<@${message.author.id}>, no tienes rolls disponibles!`
         });
+        if (rolledBy.rolls == 4) message.channel.send(`⚠ **${message.author.username}** le quedan 3 rolls! ⚠`);
 
         // Obtener arte Random
         let image = await waifuController.WAIFU_GET_RANDOM(message.guild.id);
