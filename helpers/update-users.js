@@ -3,7 +3,7 @@ const User = require('../models/user');
 const settings = {
     claimReset: 10, // minutes
     rollsReset: 5,  // minutes
-    rollsPerReset: 8
+    rollsPerReset: 7
 };
 
 const RESET_ROLLS = () => {
