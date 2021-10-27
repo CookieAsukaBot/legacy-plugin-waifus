@@ -11,5 +11,8 @@ module.exports = {
         // Cargar comandos
         const commandPath = path.join(__dirname, 'commands');
         require('../../events/commands')(bot, commandPath);
+
+        // Actualización constante de usuarios
+        require('./helpers/update-users').UPDATE_ALL_USERS();
     }
 };
