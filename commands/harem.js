@@ -50,7 +50,7 @@ module.exports = {
 
             // Collector de reacciones (derecha)
             let collectorRight = await msg.createReactionCollector({
-                filter: (reaction, user) => reaction.emoji.name === '➡' && user.id === message.author.id,
+                filter: (reaction, user) => reaction.emoji.name === '➡' && user.id !== message.client.user.id,
                 time: settings.duration * 1000, // x por 1 segundo
             });
 
@@ -71,7 +71,7 @@ module.exports = {
 
             // Collector de reacciones (izquierda)
             let collectorLeft = await msg.createReactionCollector({
-                filter: (reaction, user) => reaction.emoji.name === '⬅' && user.id === message.author.id,
+                filter: (reaction, user) => reaction.emoji.name === '⬅' && user.id !== message.client.user.id,
                 time: settings.duration * 1000, // x por 1 segundo
             });
 
