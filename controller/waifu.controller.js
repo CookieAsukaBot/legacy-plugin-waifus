@@ -48,7 +48,7 @@ const WAIFU_GET_RANDOM = async (guild) => {
 
         // Comprobar campos
         // Agregar tags
-        if (image.tags != undefined) image.description += `${image.tags.slice(0, 7).join(' ')}`;
+        if (image.tags != undefined) image.description += `${image.tags.slice(0, 8).join(' ')}`;
 
         // Agregar fuentes
         // Si es un Array
@@ -97,7 +97,7 @@ const WAIFU_CLAIM = async (data) => {
     try {
         // Modelo
         const waifu = new Waifu({
-            id: nanoid(12),
+            id: nanoid(10),
             waifu: {
                 domain: data.image.domain,
                 id: data.image.id,
