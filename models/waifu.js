@@ -14,13 +14,18 @@ const schema = new Schema({
         id: {
             type: String
         },
+        name: {
+            type: String
+        },
+        anime: {
+            type: String
+        },
         url: {
             type: String
         }
     },
     type: {
-        type: String,
-        default: 'ART', // ART, WAIFU
+        type: String, // ART, WAIFU
         required: true
     },
     userID: {
