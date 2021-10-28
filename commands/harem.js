@@ -30,11 +30,14 @@ module.exports = {
 
         // Embed
         let embed = new Discord.MessageEmbed()
-            .setDescription(`${waifus[0].waifu.domain} | ${waifus[0].waifu.id}`)
             .setColor(settings.color) // Después personalizable por el usuario
             .setAuthor(`Waifu de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
             .setImage(`${waifus[0].waifu.url}`)
             .setFooter(`1/${waifus.length}`);
+        
+        // Comprobar si es arte o personaje
+        if (waifus[0].type == "ART") embed.setDescription(`${waifus[0].waifu.domain} | ${waifus[0].waifu.id}`);
+        if (waifus[0].type == "WAIFU") embed.setDescription(`**${waifus[0].waifu.name}**\n${waifus[0].waifu.anime}`);
 
         // Responder
         message.channel.send({
@@ -64,9 +67,11 @@ module.exports = {
 
                 // Editar embed
                 let counter = count + 1;
-                embed.setImage(`${waifus[count].waifu.url}`)
-                embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`)
+                embed.setImage(`${waifus[count].waifu.url}`);
                 embed.setFooter(`${counter}/${waifus.length}`);
+                // Comprobar si es arte o personaje
+                if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
+                if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
 
                 // Editar mensaje
                 await msg.edit({ embeds: [embed] });
@@ -86,9 +91,11 @@ module.exports = {
 
                 // Editar embed
                 let counter = count + 1;
-                embed.setImage(`${waifus[count].waifu.url}`)
-                embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`)
+                embed.setImage(`${waifus[count].waifu.url}`);
                 embed.setFooter(`${counter}/${waifus.length}`);
+                // Comprobar si es arte o personaje
+                if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
+                if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
 
                 // Editar mensaje
                 await msg.edit({ embeds: [embed] });
