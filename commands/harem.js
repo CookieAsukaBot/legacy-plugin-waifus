@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const { USER_GET, USER_WAIFUS_GET } = require('../controller/user.controller');
 
 const settings = {
-    duration: 120, // (segundos) 2 minutos
+    duration: 210, // (segundos) 3 minutos y 30 segundos
     color: '#fb94ff',
     // sortBy: recent?
 };
