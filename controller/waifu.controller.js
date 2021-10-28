@@ -9,15 +9,9 @@ const { ANILIST_RANDOM_CHARACTER } = require('../helpers/api-anilist');
 const Waifu = require('../models/waifu');
 const User = require('../models/user');
 
-const randomRating = () => {
-    const ratings = ["rating:questionable", "rating:questionable"];
-    return ratings[Math.floor(Math.random() * ratings.length)].toString();
-};
-
-const ART_RANDOM_BOORU = async (guild) => {
+const RANDOM_ART_SAFEBOORU = async (guild) => {
     try {
         // Query
-        let rating = randomRating();
         let query = {
             limit: 1,
             random: true,
@@ -25,11 +19,8 @@ const ART_RANDOM_BOORU = async (guild) => {
             showUnavailable: true
         };
 
-        // Comprobar tags
-        if (rating == "rating:questionable") query.page = Math.floor(Math.random() * 350);
-
         // Petición
-        let res = await Booru.search('safebooru', [], query); // kc safebooru
+        let res = await Booru.search('safebooru', [], query);
 
         // Modelo
         let image = {
@@ -73,7 +64,7 @@ const ART_RANDOM_BOORU = async (guild) => {
     }
 };
 
-const WAIFU_RANDOM_ANILIST = async (guild) => {
+const RANDOM_WAIFU_ANILIST = async (guild) => {
     try {
         // Petición
         const character = await ANILIST_RANDOM_CHARACTER();
@@ -113,10 +104,10 @@ const WAIFU_GET_RANDOM = async (guild) => {
 
         switch (GENERATE_RANDOM_NUMBER(1, 2)) {
             case 1:
-                image = await ART_RANDOM_BOORU(guild);
+                image = await RANDOM_ART_SAFEBOORU(guild);
                 break;
             case 2:
-                image = await WAIFU_RANDOM_ANILIST(guild);
+                image = await RANDOM_WAIFU_ANILIST(guild);
                 break;
             default:
                 break;
