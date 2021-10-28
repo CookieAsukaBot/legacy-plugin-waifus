@@ -1,7 +1,7 @@
 const axios = require('axios').default;
 const url = 'https://graphql.anilist.co';
 
-const { GENERATE_RANDOM_NUMBERS, GET_RANDOM_ITEM_FROM_ARRAY } = require('./random-things');
+const { GENERATE_RANDOM_NUMBER, GENERATE_RANDOM_NUMBERS } = require('./random-things');
 
 const ANILIST_RANDOM_CHARACTER = async () => {
     const query = `
@@ -31,7 +31,7 @@ const ANILIST_RANDOM_CHARACTER = async () => {
     }
     `;
     const variables = {
-        ids: GENERATE_RANDOM_NUMBERS(25, 1, 20000) // hay montón de personajes
+        ids: GENERATE_RANDOM_NUMBERS(12, 1, 246844) // hay montón de personajes
     };
     const payload = {
         query,
@@ -42,8 +42,11 @@ const ANILIST_RANDOM_CHARACTER = async () => {
     const res = await axios.post(url, payload);
     const characters = res.data.data.Page.characters;
 
+    // Comprobar si encontró personajes
+    if (characters.length == 0) return false;
+
     // Tomar uno aleatorio
-    const character = GET_RANDOM_ITEM_FROM_ARRAY(characters);
+    const character = characters[GENERATE_RANDOM_NUMBER(1, parseInt(characters.length / 2) )];
 
     // Responder
     return character;
