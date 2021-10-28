@@ -3,6 +3,9 @@ const Booru = require('booru');
 // const Client = require('nekos.life');
 // const neko = new Client();
 
+const { GENERATE_RANDOM_NUMBER } = require('../helpers/random-things');
+const { ANILIST_RANDOM_CHARACTER } = require('../helpers/api-anilist');
+
 const Waifu = require('../models/waifu');
 const User = require('../models/user');
 
@@ -11,8 +14,7 @@ const randomRating = () => {
     return ratings[Math.floor(Math.random() * ratings.length)].toString();
 };
 
-// Roll random
-const WAIFU_GET_RANDOM = async (guild) => {
+const ART_RANDOM_BOORU = async (guild) => {
     try {
         // Query
         let rating = randomRating();
@@ -39,6 +41,7 @@ const WAIFU_GET_RANDOM = async (guild) => {
             rating: res.posts[0].rating,
             source: res.posts[0].source,
             createdAt: res.posts[0].createdAt,
+            type: "ART",
             owner: false
         };
 
@@ -62,9 +65,67 @@ const WAIFU_GET_RANDOM = async (guild) => {
             image.description += `\n[Fuente](${image.source})`;
         };
 
+        // Devolver
+        return image;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
+
+const WAIFU_RANDOM_ANILIST = async (guild) => {
+    try {
+        // Petición
+        const character = await ANILIST_RANDOM_CHARACTER();
+
+        // Modelo
+        let image = {
+            domain: 'anilist.co',
+            id: character.id,
+            anime: character.media.edges[0].node.title.romaji,
+            name: character.name.full,
+            url: character.image.large,
+            description: '',
+            type: "WAIFU",
+            owner: false
+        };
+
+        // Agregar nombre
+        image.description += `**${image.name}**\n`;
+        // Agregar anime
+        image.description += `${image.anime}`;
+
+        // Comprobar si está reclamada
+        const isClaimed = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(guild, image.id, image.domain);
+        if (isClaimed !== false) image.owner = isClaimed;
+
+        return image;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
+// Roll random
+const WAIFU_GET_RANDOM = async (guild) => {
+    try {
+        let image = false;
+
+        switch (GENERATE_RANDOM_NUMBER(1, 2)) {
+            case 1:
+                image = await ART_RANDOM_BOORU(guild);
+                break;
+            case 2:
+                image = await WAIFU_RANDOM_ANILIST(guild);
+                break;
+            default:
+                break;
+        };
+
         // Responder
         return image;
-    } catch (err) {
+    } catch (error) {
+        console.log(error);
         return false;
     };
 };
@@ -96,16 +157,21 @@ const WAIFU_CLAIM = async (data) => {
 
     try {
         // Modelo
-        const waifu = new Waifu({
+        let waifu = new Waifu({
             id: nanoid(10),
             waifu: {
                 domain: data.image.domain,
                 id: data.image.id,
                 url: data.image.url
             },
+            type: data.image.type,
             userID: data.user.id,
             guild: data.guild
         });
+
+        // Agregar datos extras
+        if (data.image.anime) waifu.waifu.anime = data.image.anime;
+        if (data.image.name) waifu.waifu.name = data.image.name;
 
         // Guardar
         await waifu.save();
