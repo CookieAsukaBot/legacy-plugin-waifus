@@ -60,7 +60,7 @@ module.exports = {
 
             // Comprobar si tiene dueño (si la id del servidor coincide)
             if (image.owner !== false && image.owner.guild == message.guild.id) {
-                const fetchUser = await FETCH_USER_BY_ID(bot, message.author.id); // resolver bug
+                const fetchUser = await FETCH_USER_BY_ID(bot, image.owner.userID);
                 embed.setColor(settings.colorClaimed);
                 embed.setAuthor(`Waifu de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
                 return message.channel.send({ embeds: [embed] });
