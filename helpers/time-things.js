@@ -11,7 +11,6 @@ const GET_COUNTDOWN_TIME = (time) => {
     let timeLeft = `en `;
     if (duration.minutes() == 1) timeLeft += `${duration.minutes()} minuto `;
     if (duration.minutes() > 1) timeLeft += `${duration.minutes()} minutos `;
-    if (duration.minutes() !== 0) timeLeft += `y `;
     if (duration.seconds() > 1) timeLeft += `${duration.seconds()} segundos`;
     if (duration.seconds() == 1) timeLeft += `${duration.seconds()} segundo`;
 
