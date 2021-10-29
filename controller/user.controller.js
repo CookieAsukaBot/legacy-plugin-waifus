@@ -42,9 +42,9 @@ const USER_GET = async (message) => {
     };
 };
 
-const USER_WAIFUS_GET = async (id) => {
+const USER_WAIFUS_GET = async (guild, userID) => {
     try {
-        const waifus = await Waifu.find({ userID: id });
+        const waifus = await Waifu.find({ guild, userID });
         return waifus;
     } catch (error) {
         console.error(error);
