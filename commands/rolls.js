@@ -11,7 +11,7 @@ module.exports = {
     async execute (message, args) {
         // Comprobar Usuario y Waifus
         const user = await USER_GET(message);
-        const waifus = await USER_WAIFUS_GET(message.author.id);
+        const waifus = await USER_WAIFUS_GET(message.guild.id, message.author.id);
         if (user == false) return message.channel.send({ content: `ocurrió un error al intentar crear tu usuario!` });
 
         // Descripción
