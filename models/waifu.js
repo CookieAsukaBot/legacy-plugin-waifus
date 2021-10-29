@@ -17,6 +17,9 @@ const schema = new Schema({
         name: {
             type: String
         },
+        gender: {
+            type: Number // 0 female, 1 male
+        },
         anime: {
             type: String
         },
