@@ -64,6 +64,64 @@ const RANDOM_ART_SAFEBOORU = async (guild) => {
     }
 };
 
+const RANDOM_ART_GELBOORU = async (guild) => {
+    try {
+        // Query
+        let query = {
+            limit: 1,
+            random: true,
+            page: 100, // 500
+            showUnavailable: true
+        };
+
+        // Tags
+        const tags = [''];
+
+        // Petición
+        let res = await Booru.search('gelbooru', tags, query);
+
+        // Modelo
+        let image = {
+            id: res.posts[0].id,
+            domain: res.posts[0].booru.domain,
+            url: res.posts[0].fileUrl,
+            tags: res.posts[0].tags,
+            description: '',
+            rating: res.posts[0].rating,
+            source: res.posts[0].source,
+            createdAt: res.posts[0].createdAt,
+            type: "ART",
+            owner: false
+        };
+
+        // Comprobar si está reclamada
+        const isClaimed = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(guild, image.id, image.domain);
+        if (isClaimed !== false) image.owner = isClaimed;
+
+        // Comprobar campos
+        // Agregar tags
+        if (image.tags != undefined) image.description += `${image.tags.slice(0, 8).join(' ')}`;
+
+        // Agregar fuentes
+        // Si es un Array
+        if (image.source && Array.isArray(image.source)) {
+            image.description += image.source.forEach((source, index) =>
+                `\n[Fuente (${index + 1}/${image.source.length})](${source})`
+            );
+        };
+        // Si es un String
+        if (image.source && !Array.isArray(image.source)) {
+            image.description += `\n[Fuente](${image.source})`;
+        };
+
+        // Devolver
+        return image;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
+
 const RANDOM_WAIFU_ANILIST = async (guild) => {
     try {
         // Petición
@@ -191,10 +249,21 @@ const WAIFU_DIVORCE = async (guild, id, user) => {
 };
 
 // Regalar
-const WAIFU_GIVE = async () => {};
+const WAIFU_GIFT = async (data) => {
+    const { guild, userID, id, mention } = data;
+    // Actualizar
+    await Waifu.updateOne({ guild, userID, id }, { userID: mention })
+        .then(() => {
+            return true;
+        }).catch(error => {
+            console.error(error);
+            return false;
+        });
+};
 
 module.exports = {
     WAIFU_GET_RANDOM,
     WAIFU_CLAIM,
-    WAIFU_DIVORCE
+    WAIFU_DIVORCE,
+    WAIFU_GIFT
 };
