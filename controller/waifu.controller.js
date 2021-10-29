@@ -182,11 +182,11 @@ const WAIFU_CLAIM = async (data) => {
 const WAIFU_DIVORCE = async (id, user) => {
     // Eliminar
     await Waifu.deleteOne({ id, userID: user })
-        then(() => {
+        .then(() => {
             return true;
         }).catch(error => {
+            console.error(error);
             return false;
-            console.error(error)
         });
 };
 
