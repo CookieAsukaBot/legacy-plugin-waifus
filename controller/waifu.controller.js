@@ -15,7 +15,7 @@ const RANDOM_ART_SAFEBOORU = async (guild) => {
         let query = {
             limit: 1,
             random: true,
-            page: Math.floor(Math.random() * 500), // 500
+            page: Math.floor(Math.random() * 30000), // 500
             showUnavailable: true
         };
 
@@ -149,7 +149,7 @@ const WAIFU_CLAIM = async (data) => {
     try {
         // Modelo
         let waifu = new Waifu({
-            id: nanoid(10),
+            id: nanoid(12),
             waifu: {
                 domain: data.image.domain,
                 id: data.image.id,
@@ -179,9 +179,9 @@ const WAIFU_CLAIM = async (data) => {
 };
 
 // Divorciar
-const WAIFU_DIVORCE = async (id, user) => {
+const WAIFU_DIVORCE = async (guild, id, user) => {
     // Eliminar
-    await Waifu.deleteOne({ id, userID: user })
+    await Waifu.deleteOne({ guild, id, userID: user })
         .then(() => {
             return true;
         }).catch(error => {
