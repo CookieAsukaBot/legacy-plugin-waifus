@@ -117,14 +117,16 @@ module.exports = {
                 let divorceEmbed = new MessageEmbed()
                     .setColor('GREEN')
                     .setAuthor(`Felicidades, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
+                    .setDescription(`Te has divorciado\n${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`)
+                    .setThumbnail(`${waifus[count].waifu.url}`)
                     .setImage('https://c.tenor.com/KuqLqBEfs6AAAAAC/huevos-a-huevo.gif')
-                    .setFooter(`❗ Vuelve a utilizar el comando **${bot.prefix}${this.name}** para volver a mirar tu lista`);
+                    .setFooter(`❗ Vuelve a utilizar el comando ${bot.prefix}${this.name} para volver a mirar tu lista`);
 
                 // Comprobar
                 if (divorce == false) {
                     divorceEmbed.setColor('RED');
                     divorceEmbed.setAuthor(`Oh no, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
-                    divorceEmbed.setDescription('¡Ocurrió un error al intentar divorciarte!');
+                    divorceEmbed.setDescription('Ocurrió un error al intentar divorciarte');
                     divorceEmbed.setImage('https://c.tenor.com/DeK0sJPGEDIAAAAC/jason-bateman-con-una-chingada.gif');
                 };
 
