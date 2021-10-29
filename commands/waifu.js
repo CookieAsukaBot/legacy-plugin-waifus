@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 // Importar cosas locales
 const { WAIFU_GET_RANDOM, WAIFU_CLAIM } = require('../controller/waifu.controller');
@@ -47,7 +47,7 @@ module.exports = {
             if (rolledBy.rolls == 3) image.description += `\n\n⚠ quedan **2** rolls ⚠`;
 
             // Embed
-            let embed = new Discord.MessageEmbed()
+            let embed = new MessageEmbed()
                 .setDescription(image.description)
                 .setImage(image.url)
                 .setFooter(`${image.domain} | ${image.id}`);
