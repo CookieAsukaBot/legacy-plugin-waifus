@@ -108,7 +108,7 @@ module.exports = {
 
             // Regalar
             if (MENTION) {
-                // Collector de reacciones (basura)
+                // Collector de reacciones (regalar)
                 let collectorGift = await msg.createReactionCollector({
                     filter: (reaction, user) => reaction.emoji.name === '🎁' && user.id === message.author.id,
                     idle: settings.duration * 1000, // x por 1 segundo
@@ -135,7 +135,7 @@ module.exports = {
                     let giftEmbed = new MessageEmbed()
                         .setColor('PURPLE')
                         .setAuthor(`Has regalado, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
-                        .setDescription(`Tu regalo se entregó a ${MENTION.user.username}\n${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`)
+                        .setDescription(`Tu regalo se entregó a **${MENTION.user.username}**\n${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`)
                         .setThumbnail(`${waifus[count].waifu.url}`)
                         .setImage('https://c.tenor.com/9VlbkbzetVUAAAAC/present-for-you.gif')
                         .setFooter(`❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`);
