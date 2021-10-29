@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js');
 const { WAIFU_GET_RANDOM, WAIFU_CLAIM } = require('../controller/waifu.controller');
 const { USER_NEW, USER_GET } = require('../controller/user.controller');
 const { GET_AVATAR_URL, FETCH_USER_BY_ID } = require('../helpers/discord-utils');
+const { GET_COUNTDOWN_TIME } = require('../helpers/time-things');
 
 // Modelos
 const User = require('../models/user');
@@ -25,9 +26,14 @@ module.exports = {
         if (rolledBy == false) return message.channel.send({ content: `ocurrió un error al intentar crear tu usuario!` });
 
         // Comprobar si puede tirar
-        if (rolledBy.rolls <= 0) return message.channel.send({
-            content: `<@${message.author.id}>, no tienes rolls disponibles!`
-        });
+        if (rolledBy.rolls <= 0) {
+            // Calcular tiempo
+            const timeLeft = GET_COUNTDOWN_TIME(bot.waifus_cooldown.rolls.timeLeft);
+            // Responder
+            return message.channel.send({
+                content: `<@${message.author.id}>, no tienes rolls disponibles!\nEl reinicio es **${timeLeft}**.`
+            });
+        };
 
         // Obtener arte Random
         let image = await WAIFU_GET_RANDOM(message.guild.id);
@@ -54,7 +60,7 @@ module.exports = {
 
             // Comprobar si tiene dueño (si la id del servidor coincide)
             if (image.owner !== false && image.owner.guild == message.guild.id) {
-                const fetchUser = await FETCH_USER_BY_ID(bot, message.author.id);
+                const fetchUser = await FETCH_USER_BY_ID(bot, message.author.id); // resolver bug
                 embed.setColor(settings.colorClaimed);
                 embed.setAuthor(`Waifu de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
                 return message.channel.send({ embeds: [embed] });
@@ -108,9 +114,11 @@ module.exports = {
                         await User.updateOne({ userID: user.id, guild: message.guild.id }, { canClaim: false });
                         await collector.stop();
                     } else if (findUser.canClaim == false) {
+                        // Calcular tiempo
+                        const timeLeft = GET_COUNTDOWN_TIME(bot.waifus_cooldown.claims.timeLeft);
                         // Responder alerta
                         message.channel.send({
-                            content: `<@${findUser.userID}>, ya has reclamado, necesitas esperar al siguiente reset!`
+                            content: `<@${findUser.userID}>, ya has reclamado!\nEl reinicio es **${timeLeft}**.`
                         });
                     };
                 });
