@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 // Importar cosas locales
 const { USER_GET, USER_WAIFUS_GET } = require('../controller/user.controller');
@@ -23,7 +23,7 @@ module.exports = {
         description += `\n\nWaifus: ${waifus.length} 💞`;
 
         // Embed
-        let embed = new Discord.MessageEmbed()
+        let embed = new MessageEmbed()
             .setColor(process.env.BOT_COLOR)
             .setAuthor(`Estado de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
             .setDescription(description);
