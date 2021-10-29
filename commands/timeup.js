@@ -12,12 +12,12 @@ module.exports = {
         const cooldownClaims = GET_COUNTDOWN_TIME(bot.waifus_cooldown.claims.timeLeft, true);
 
         // Embed
+        const DESCRIPTION = `**Rolls**: ${cooldownRolls}. 🎲\n **Reclamación**: ${cooldownClaims}. 💖`;
         let embed = new MessageEmbed()
             .setColor(process.env.BOT_COLOR)
-            .setAuthor('Próximos reinicios')
+            .setAuthor('♻️ Próximos reinicios')
             // .setThumbnail() // waifu principal
-            .addField("Rolls", `Es ${cooldownRolls} 🎲`)
-            .addField("Reclamación", `Es ${cooldownClaims} 💖`);
+            .setDescription(DESCRIPTION);
 
         // Responder
         message.channel.send({
