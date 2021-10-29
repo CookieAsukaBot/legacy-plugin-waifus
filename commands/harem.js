@@ -22,7 +22,7 @@ module.exports = {
         if (user == false) return message.channel.send({ content: `ocurrió un error al intentar crear tu usuario!` });
 
         // Buscar Waifus
-        const waifus = await USER_WAIFUS_GET(message.author.id);
+        const waifus = await USER_WAIFUS_GET(message.guild.id, message.author.id);
 
         // Comprobar
         if (!waifus.length) return message.channel.send({
@@ -111,7 +111,7 @@ module.exports = {
             });
 
             collectorDivorce.on('collect', async (reaction, user) => {
-                const divorce = await WAIFU_DIVORCE(waifus[count].id, user.id);
+                const divorce = await WAIFU_DIVORCE(message.guild.id, waifus[count].id, user.id);
 
                 // Embed
                 let divorceEmbed = new MessageEmbed()
