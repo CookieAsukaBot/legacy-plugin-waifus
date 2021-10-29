@@ -5,7 +5,7 @@ const { USER_GET, USER_WAIFUS_GET } = require('../controller/user.controller');
 const { WAIFU_DIVORCE } = require('../controller/waifu.controller');
 
 const settings = {
-    duration: 240, // (segundos) 2 minutos
+    duration: 240, // (segundos) 4 minutos
     color: '#fb94ff',
     // sortBy: recent?
 };
