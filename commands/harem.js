@@ -5,7 +5,7 @@ const { USER_GET, USER_WAIFUS_GET } = require('../controller/user.controller');
 const { WAIFU_DIVORCE } = require('../controller/waifu.controller');
 
 const settings = {
-    duration: 120, // (segundos) 2 minutos
+    duration: 240, // (segundos) 2 minutos
     color: '#fb94ff',
     // sortBy: recent?
 };
@@ -25,7 +25,7 @@ module.exports = {
         const waifus = await USER_WAIFUS_GET(message.author.id);
 
         // Comprobar
-        if (!waifus) return message.channel.send({
+        if (!waifus.length) return message.channel.send({
             content: `<@${message.author.id}>, necesitas reclamar waifus primero!`
         });
 
