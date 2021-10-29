@@ -13,7 +13,8 @@ const settings = {
 module.exports = {
     name: 'harem',
     category: 'Waifu',
-    description: 'Puedes ver tu harem.', // o la de un usuario.
+    description: 'Puedes ver tu harem, regalar o divorciarte.',
+    usage: 'para regalar: @usuario',
     async execute (message, args, bot) {
         // Detectar si en args hay un usuario
         const MENTION = message.mentions.members.first();
