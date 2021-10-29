@@ -18,7 +18,7 @@ const USER_NEW = async (data) => {
         // Mostrar por consola
         console.error({ error });
         // Responder
-        return;
+        return false;
     };
 };
 
@@ -33,14 +33,11 @@ const USER_GET = async (message) => {
                 id: message.author.id,
                 guild: message.guild.id
             });
-
-            // Comprobar si se creó el usuario
-            if (!findUser) return false;
         };
-
+        // Devolver
         return findUser;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return false;
     };
 };
@@ -51,7 +48,7 @@ const USER_WAIFUS_GET = async (id) => {
         return waifus;
     } catch (error) {
         console.error(error);
-        return {};
+        return false;
     };
 };
 
