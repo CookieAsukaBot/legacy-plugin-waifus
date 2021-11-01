@@ -13,8 +13,9 @@ const GET_COUNTDOWN_TIME = (time) => {
     if (duration.minutes() > 1) timeLeft += `${duration.minutes()} minutos `;
     if (duration.seconds() > 1) timeLeft += `${duration.seconds()} segundos`;
     if (duration.seconds() == 1) timeLeft += `${duration.seconds()} segundo`;
+    if (duration.minutes() == 0 && duration.seconds() == 0) timeLeft = `ahora mismo`;
 
-    return timeLeft;
+    return timeLeft.trim();
 };
 
 module.exports = {
