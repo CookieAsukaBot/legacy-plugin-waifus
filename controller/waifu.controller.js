@@ -7,7 +7,6 @@ const { GENERATE_RANDOM_NUMBER } = require('../helpers/random-things');
 const { ANILIST_RANDOM_CHARACTER } = require('../helpers/api-anilist');
 
 const Waifu = require('../models/waifu');
-const User = require('../models/user');
 
 const RANDOM_ART_SAFEBOORU = async (guild) => {
     try {
@@ -70,12 +69,12 @@ const RANDOM_ART_GELBOORU = async (guild) => {
         let query = {
             limit: 1,
             random: true,
-            page: 100, // 500
+            page: Math.floor(Math.random() * 200),
             showUnavailable: true
         };
 
         // Tags
-        const tags = [''];
+        const tags = ['asian', '-webm', '-mp4', '-fellatio', '-trap'];
 
         // Petición
         let res = await Booru.search('gelbooru', tags, query);
@@ -158,14 +157,18 @@ const RANDOM_WAIFU_ANILIST = async (guild) => {
 // Roll random
 const WAIFU_GET_RANDOM = async (guild) => {
     try {
+        const SEED = GENERATE_RANDOM_NUMBER(1, 100);
         let image = false;
 
-        switch (GENERATE_RANDOM_NUMBER(1, 2)) {
-            case 1:
+        switch (true) {
+            case (SEED > 49):
                 image = await RANDOM_ART_SAFEBOORU(guild);
                 break;
-            case 2:
+            case (SEED > 1 && SEED <= 49):
                 image = await RANDOM_WAIFU_ANILIST(guild);
+                break;
+            case (SEED == 1):
+                image = await RANDOM_ART_GELBOORU(guild);
                 break;
             default:
                 break;
@@ -265,5 +268,6 @@ module.exports = {
     WAIFU_GET_RANDOM,
     WAIFU_CLAIM,
     WAIFU_DIVORCE,
-    WAIFU_GIFT
+    WAIFU_GIFT,
+    WAIFU_SEARCH_BY_ID_AND_DOMAIN
 };
