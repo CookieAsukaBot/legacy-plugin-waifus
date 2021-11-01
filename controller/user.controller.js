@@ -44,7 +44,8 @@ const USER_GET = async (message) => {
 
 const USER_WAIFUS_GET = async (guild, userID) => {
     try {
-        const waifus = await Waifu.find({ guild, userID });
+        const waifus = await Waifu.find({ guild, userID })
+            .sort({ updatedAt: 1 });
         return waifus;
     } catch (error) {
         console.error(error);
