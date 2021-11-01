@@ -37,7 +37,7 @@ module.exports = {
             } else {
                 // Ver
                 action.mention = true;
-            }
+            };
         };
 
         // Buscar usuario
@@ -54,19 +54,23 @@ module.exports = {
             content: `<@${message.author.id}>, no hay ninguna waifu reclamada!`
         });
 
+        // Contadores
+        let waifusCount = waifus.length - 1;
+        let page = 0;
+
         // Embed
         let embed = new MessageEmbed()
             .setColor(settings.color) // Después personalizable por el usuario
-            .setImage(`${waifus[0].waifu.url}`)
-            .setFooter(`0/${waifus.length}`)
-            .setTimestamp(`${waifus[0].updatedAt}`);
+            .setImage(`${waifus[page].waifu.url}`)
+            .setFooter(`0/${waifusCount}`)
+            .setTimestamp(`${waifus[page].updatedAt}`);
         // Comprobar si hay mención
         if (action.mention == true) embed.setAuthor(`Waifu de ${MENTION.user.username}`, GET_AVATAR_URL(MENTION.user));
         if (action.mention == false) embed.setAuthor(`Waifu de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
         
         // Comprobar si es arte o personaje
-        if (waifus[0].type == "ART") embed.setDescription(`${waifus[0].waifu.domain} | ${waifus[0].waifu.id}`);
-        if (waifus[0].type == "WAIFU") embed.setDescription(`**${waifus[0].waifu.name}**\n${waifus[0].waifu.anime}`);
+        if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
+        if (waifus[page].type == "WAIFU") embed.setDescription(`**${waifus[page].waifu.name}**\n${waifus[page].waifu.anime}`);
 
         // Responder
         message.channel.send({
@@ -74,10 +78,6 @@ module.exports = {
         }).then(async msg => {
             // Comprobar cantidad de Waifus
             if (waifus.length == 1) return;
-
-            // Contadores
-            let count = 0;
-            let waifusCount = waifus.length - 1;
 
             // Agregar reacciones
             if (waifus.length >= settings.jumpIf) await msg.react('⏪');
@@ -99,26 +99,26 @@ module.exports = {
             collectorArrows.on('collect', async (reaction) => {
                 // Derecha
                 if (reaction.emoji.name === "➡") {
-                    count = count + 1; // Sumar al contador
+                    page = page + 1; // Sumar al contador
                     // Comprobar que no sobrepase el contador de Waifus
-                    if (count > waifusCount) count = 0;
+                    if (page > waifusCount) page = 0;
                 };
 
                 // Izquierda
                 if (reaction.emoji.name === "⬅") {
                     // Restar al contador
-                    count = count - 1;
+                    page = page - 1;
                     // Comprobar que no sea negativo
-                    if (count <= -1) count = waifusCount;
+                    if (page <= -1) page = waifusCount;
                 };
 
                 // Editar embed
-                embed.setImage(`${waifus[count].waifu.url}`);
-                embed.setFooter(`${count}/${waifus.length}`);
-                embed.setTimestamp(`${waifus[count].updatedAt}`);
+                embed.setImage(`${waifus[page].waifu.url}`);
+                embed.setFooter(`${page}/${waifusCount}`);
+                embed.setTimestamp(`${waifus[page].updatedAt}`);
                 // Comprobar si es arte o personaje
-                if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
-                if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
+                if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
+                if (waifus[page].type == "WAIFU") embed.setDescription(`**${waifus[page].waifu.name}**\n${waifus[page].waifu.anime}`);
 
                 // Editar mensaje
                 await msg.edit({ embeds: [embed] });
@@ -133,17 +133,17 @@ module.exports = {
                     idle: settings.duration * 1000, // x por 1 segundo
                 });
                 collectorDoubleRight.on('collect', async () => {
-                    count = count + settings.jumpInDouble; // Sumar al contador
+                    page = page + settings.jumpInDouble; // Sumar al contador
                     // Comprobar que no sobrepase el contador de Waifus
-                    if (count > waifusCount) count = 0;
+                    if (page > waifusCount) page = 0;
 
                     // Editar embed
-                    embed.setImage(`${waifus[count].waifu.url}`);
-                    embed.setFooter(`${count}/${waifus.length}`);
-                    embed.setTimestamp(`${waifus[count].updatedAt}`);
+                    embed.setImage(`${waifus[page].waifu.url}`);
+                    embed.setFooter(`${page}/${waifusCount}`);
+                    embed.setTimestamp(`${waifus[page].updatedAt}`);
                     // Comprobar si es arte o personaje
-                    if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
-                    if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
+                    if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
+                    if (waifus[page].type == "WAIFU") embed.setDescription(`**${waifus[page].waifu.name}**\n${waifus[page].waifu.anime}`);
 
                     // Editar mensaje
                     await msg.edit({ embeds: [embed] });
@@ -158,17 +158,17 @@ module.exports = {
                 });
                 collectorDoubleLeft.on('collect', async () => {
                     // Restar al contador
-                    count = count - settings.jumpInDouble;
+                    page = page - settings.jumpInDouble;
                     // Comprobar que no sea negativo
-                    if (count <= -1) count = waifusCount;
+                    if (page <= -1) page = waifusCount;
 
                     // Editar embed
-                    embed.setImage(`${waifus[count].waifu.url}`);
-                    embed.setFooter(`${count}/${waifus.length}`);
-                    embed.setTimestamp(`${waifus[count].updatedAt}`);
+                    embed.setImage(`${waifus[page].waifu.url}`);
+                    embed.setFooter(`${page}/${waifusCount}`);
+                    embed.setTimestamp(`${waifus[page].updatedAt}`);
                     // Comprobar si es arte o personaje
-                    if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
-                    if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
+                    if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
+                    if (waifus[page].type == "WAIFU") embed.setDescription(`**${waifus[page].waifu.name}**\n${waifus[page].waifu.anime}`);
 
                     // Editar mensaje
                     await msg.edit({ embeds: [embed] });
@@ -193,8 +193,8 @@ module.exports = {
                         let divorceEmbed = new MessageEmbed()
                             .setColor('GREEN')
                             .setAuthor(`Felicidades, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
-                            .setDescription(`Te has divorciado\n${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`)
-                            .setThumbnail(`${waifus[count].waifu.url}`)
+                            .setDescription(`Te has divorciado\n${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`)
+                            .setThumbnail(`${waifus[page].waifu.url}`)
                             .setImage('https://c.tenor.com/KuqLqBEfs6AAAAAC/huevos-a-huevo.gif')
                             .setFooter(`❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`);
 
@@ -209,7 +209,7 @@ module.exports = {
                                 });
                                 collectorAccept.on('collect', async () => {
                                     // Divorciar
-                                    const divorce = await WAIFU_DIVORCE(message.guild.id, waifus[count].id, user.id);
+                                    const divorce = await WAIFU_DIVORCE(message.guild.id, waifus[page].id, user.id);
                                     // Comprobar
                                     if (divorce == false) {
                                         divorceEmbed.setColor('RED');
@@ -256,8 +256,8 @@ module.exports = {
                         let giftEmbed = new MessageEmbed()
                             .setColor('PURPLE')
                             .setAuthor(`Has regalado, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
-                            .setDescription(`Tu regalo se entregó a **${MENTION.user.username}**\n${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`)
-                            .setThumbnail(`${waifus[count].waifu.url}`)
+                            .setDescription(`Tu regalo se entregó a **${MENTION.user.username}**\n${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`)
+                            .setThumbnail(`${waifus[page].waifu.url}`)
                             .setImage('https://c.tenor.com/9VlbkbzetVUAAAAC/present-for-you.gif')
                             .setFooter(`❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`);
 
@@ -274,7 +274,7 @@ module.exports = {
                                     const gift = await WAIFU_GIFT({
                                         guild: message.guild.id,
                                         userID: user.id,
-                                        id: waifus[count].id,
+                                        id: waifus[page].id,
                                         mention: MENTION.user.id
                                     });
             
