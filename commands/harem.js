@@ -17,7 +17,7 @@ module.exports = {
     name: 'harem',
     category: 'Waifu',
     description: 'Puedes ver tu harem, regalar o divorciarte.',
-    usage: '[divorciar|regalar @mención]',
+    usage: '[divorciar | regalar @mención]',
     async execute (message, args, bot) {
         let action = {
             mention: false,
@@ -90,7 +90,42 @@ module.exports = {
             if (action.gift == true) await msg.react('🎁'); // Regalar
             // await msg.react('💘'); // Marcar como Arte/Waifu principal
 
-            // Collector de reacciones (derecha)
+
+            // Collector de reacciones (derecha/izquierda)
+            let collectorArrows = await msg.createReactionCollector({
+                filter: (reaction, user) => (reaction.emoji.name === '⬅' || reaction.emoji.name === '➡') && user.id !== message.client.user.id,
+                idle: settings.duration * 1000, // x por 1 segundo
+            });
+            collectorArrows.on('collect', async (reaction) => {
+                // Derecha
+                if (reaction.emoji.name === "➡") {
+                    count = count + 1; // Sumar al contador
+                    // Comprobar que no sobrepase el contador de Waifus
+                    if (count > waifusCount) count = 0;
+                };
+
+                // Izquierda
+                if (reaction.emoji.name === "⬅") {
+                    // Restar al contador
+                    count = count - 1;
+                    // Comprobar que no sea negativo
+                    if (count <= -1) count = waifusCount;
+                };
+
+                // Editar embed
+                embed.setImage(`${waifus[count].waifu.url}`);
+                embed.setFooter(`${count}/${waifus.length}`);
+                embed.setTimestamp(`${waifus[count].updatedAt}`);
+                // Comprobar si es arte o personaje
+                if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
+                if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
+
+                // Editar mensaje
+                await msg.edit({ embeds: [embed] });
+            });
+
+
+            // Collector de reacciones (doble derecha)
             let collectorDoubleRight = false;
             if (waifus.length >= settings.jumpIf) {
                 collectorDoubleRight = await msg.createReactionCollector({
@@ -100,7 +135,7 @@ module.exports = {
                 collectorDoubleRight.on('collect', async () => {
                     count = count + settings.jumpInDouble; // Sumar al contador
                     // Comprobar que no sobrepase el contador de Waifus
-                    if (count > waifusCount) count = waifusCount;
+                    if (count > waifusCount) count = 0;
 
                     // Editar embed
                     embed.setImage(`${waifus[count].waifu.url}`);
@@ -114,30 +149,7 @@ module.exports = {
                     await msg.edit({ embeds: [embed] });
                 });
             };
-            let collectorRight = await msg.createReactionCollector({
-                filter: (reaction, user) => reaction.emoji.name === '➡' && user.id !== message.client.user.id,
-                idle: settings.duration * 1000, // x por 1 segundo
-            });
-            collectorRight.on('collect', async () => {
-                count = count + 1; // Sumar al contador
-                // Comprobar que no sobrepase el contador de Waifus
-                if (count > waifusCount) count = 0;
-
-                // Editar embed
-                embed.setImage(`${waifus[count].waifu.url}`);
-                embed.setFooter(`${count}/${waifus.length}`);
-                embed.setTimestamp(`${waifus[count].updatedAt}`);
-                // Comprobar si es arte o personaje
-                if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
-                if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
-
-                // Editar mensaje
-                await msg.edit({ embeds: [embed] });
-                // Reiniciar tiempo
-            });
-
-
-            // Collector de reacciones (izquierda)
+            // Collector de reacciones (doble izquierda)
             let collectorDoubleLeft = false;
             if (waifus.length >= settings.jumpIf) {
                 collectorDoubleLeft = await msg.createReactionCollector({
@@ -162,28 +174,6 @@ module.exports = {
                     await msg.edit({ embeds: [embed] });
                 });
             };
-            let collectorLeft = await msg.createReactionCollector({
-                filter: (reaction, user) => reaction.emoji.name === '⬅' && user.id !== message.client.user.id,
-                idle: settings.duration * 1000, // x por 1 segundo
-            });
-            collectorLeft.on('collect', async () => {
-                // Restar al contador
-                count = count - 1;
-                // Comprobar que no sea negativo
-                if (count <= -1) count = waifusCount;
-                UICount = count - 1;
-
-                // Editar embed
-                embed.setImage(`${waifus[count].waifu.url}`);
-                embed.setFooter(`${count}/${waifus.length}`);
-                embed.setTimestamp(`${waifus[count].updatedAt}`);
-                // Comprobar si es arte o personaje
-                if (waifus[count].type == "ART") embed.setDescription(`${waifus[count].waifu.domain} | ${waifus[count].waifu.id}`);
-                if (waifus[count].type == "WAIFU") embed.setDescription(`**${waifus[count].waifu.name}**\n${waifus[count].waifu.anime}`);
-
-                // Editar mensaje
-                await msg.edit({ embeds: [embed] });
-            });
 
             // Acciones
             switch (true) {
@@ -197,8 +187,7 @@ module.exports = {
                         // Desactivar collectors
                         if (collectorDoubleRight !== false) await collectorDoubleRight.stop();
                         if (collectorDoubleLeft !== false) await collectorDoubleLeft.stop();
-                        await collectorRight.stop();
-                        await collectorLeft.stop();
+                        await collectorArrows.stop();
 
                         // Embed
                         let divorceEmbed = new MessageEmbed()
@@ -261,8 +250,7 @@ module.exports = {
                         // Desactivar collectors
                         if (collectorDoubleRight !== false) await collectorDoubleRight.stop();
                         if (collectorDoubleLeft !== false) await collectorDoubleLeft.stop();
-                        await collectorRight.stop();
-                        await collectorLeft.stop();
+                        await collectorArrows.stop();
 
                         // Embed
                         let giftEmbed = new MessageEmbed()
@@ -294,8 +282,7 @@ module.exports = {
                                         // Enviar aviso
                                         message.reply('ocurrió un error al intentar envíar tu regalo!');
                                         // Desactivar collectors
-                                        await collectorRight.stop();
-                                        await collectorLeft.stop();
+                                        await collectorArrows.stop();
                                         return;
                                     };
             
