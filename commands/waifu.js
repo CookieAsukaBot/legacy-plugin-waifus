@@ -137,13 +137,13 @@ module.exports = {
                             // Editar mensaje
                             await msg.edit({ embeds: [embed] });
                             // Enviar mensaje
-                            await message.channel.send({
+                            await msg.reply({
                                 // después personalizar
                                 content: `💖 ¡**${collector.rollStatus.user.username}** reclamó su waifu! 💖`
                             });
                         } else if (CLAIM_STATUS == false) {
                             // Enviar mensaje
-                            await message.channel.send({
+                            await msg.reply({
                                 content: `Ocurrió un error al reclamar la Waifu en la DB. 💥`
                             });
                         };
@@ -151,7 +151,7 @@ module.exports = {
                 });
             });
         }).catch(error => {
-            console.log(error);
+            console.error(error);
             message.reply({
                 content: `ocurrió un error en la base de datos!`
             });
