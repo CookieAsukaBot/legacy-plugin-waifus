@@ -65,8 +65,8 @@ module.exports = {
             .setFooter(`0/${waifusCount}`)
             .setTimestamp(`${waifus[page].updatedAt}`);
         // Comprobar si hay mención
-        if (action.mention == true) embed.setAuthor(`Waifu de ${MENTION.user.username}`, GET_AVATAR_URL(MENTION.user));
-        if (action.mention == false) embed.setAuthor(`Waifu de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
+        if (action.mention == true) embed.setAuthor(`Harem de ${MENTION.user.username}`, GET_AVATAR_URL(MENTION.user));
+        if (action.mention == false) embed.setAuthor(`Harem de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
         
         // Comprobar si es arte o personaje
         if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
