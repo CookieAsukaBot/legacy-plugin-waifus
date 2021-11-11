@@ -254,48 +254,59 @@ module.exports = {
                             .setFooter(`❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`);
 
                         // Enviar confirmación
-                        message.reply(`¿Quieres **reglar** a ${MENTION.user.tag}?`)
+                        let usersGift = [];
+                        let usersCancelGift = [];
+                        message.reply(`¿Quieres **regalar** a ${MENTION.user.tag}?\nSe requiere que de **ambos confirmen** el regalo.`)
                             .then(async msg => {
                                 await msg.react('✅');
                                 await msg.react('❌');
                                 let collectorAccept = await msg.createReactionCollector({
-                                    filter: (reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id,
+                                    filter: (reaction, user) => reaction.emoji.name === '✅',
                                     idle: settings.duration * 1000, // x por 1 segundo
                                 });
-                                collectorAccept.on('collect', async () => {
-                                    const gift = await WAIFU_GIFT({
-                                        guild: message.guild.id,
-                                        userID: user.id,
-                                        id: waifus[page].id,
-                                        mention: MENTION.user.id
-                                    });
-            
-                                    if (gift == false) {
-                                        // Enviar aviso
-                                        message.reply('ocurrió un error al intentar envíar tu regalo!');
-                                        // Desactivar collectors
-                                        await collectorArrows.stop();
-                                        return;
-                                    };
-            
-                                    // Embed
-                                    message.channel.send({
-                                        embeds: [giftEmbed]
-                                    });
+                                collectorAccept.on('collect', async (reaction, user) => {
+                                    usersGift.push(user.id);
+                                    if (usersGift.includes(message.author.id) && usersGift.includes(MENTION.user.id)) {
+                                        const gift = await WAIFU_GIFT({
+                                            guild: message.guild.id,
+                                            userID: message.author.id,
+                                            id: waifus[page].id,
+                                            mention: MENTION.user.id
+                                        });
 
-                                    // Desactivar collectors
-                                    await collectorCancel.stop();
-                                    await collectorAccept.stop();
+                                        if (gift == false) {
+                                            // Enviar aviso
+                                            message.reply('ocurrió un error al intentar envíar tu regalo!');
+                                            // Desactivar collectors
+                                            await collectorArrows.stop();
+                                            return;
+                                        };
+
+                                        // Embed
+                                        message.channel.send({
+                                            embeds: [giftEmbed]
+                                        });
+
+                                        // Desactivar collectors
+                                        await collectorCancel.stop();
+                                        await collectorAccept.stop();
+                                    };
                                 });
                                 let collectorCancel = await msg.createReactionCollector({
-                                    filter: (reaction, user) => reaction.emoji.name === '❌' && user.id === message.author.id,
+                                    filter: (reaction, user) => reaction.emoji.name === '❌',
                                     idle: settings.duration * 1000, // x por 1 segundo
                                 });
-                                collectorCancel.on('collect', async () => {
-                                    // Desactivar collectors
-                                    await collectorGift.stop();
-                                    await collectorAccept.stop();
-                                    await collectorCancel.stop();
+                                collectorCancel.on('collect', async (reaction, user) => {
+                                    usersCancelGift.push(user.id);
+                                    if (usersCancelGift.includes(message.author.id) || usersCancelGift.includes(MENTION.user.id)) {
+                                        message.channel.send({
+                                            content: `Se canceló el regalo.`
+                                        });
+                                        // Desactivar collectors
+                                        await collectorGift.stop();
+                                        await collectorAccept.stop();
+                                        await collectorCancel.stop();
+                                    };
                                 });
                                 // Desactivar collector
                                 await collectorGift.stop();
