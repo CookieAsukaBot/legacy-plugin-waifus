@@ -54,12 +54,22 @@ const USER_WAIFUS_GET = async (guild, userID) => {
 };
 
 // Personalización
-const USER_CUSTOM_HAREMTITLE = async (guild, userID, newTitle) => {
+const USER_CUSTOM_HAREM_TITLE = async (guild, userID, newTitle) => {
     try {
         await User.updateOne({ guild, userID }, {
-            customization: {
-                haremTitle: newTitle
-            }
+            "customization.haremTitle": newTitle
+        });
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    };
+};
+
+const USER_CUSTOM_HAREM_COLOR = async (guild, userID, newColor) => {
+    try {
+        await User.updateOne({ guild, userID }, {
+            "customization.haremColor": newColor
         });
         return true;
     } catch (error) {
@@ -72,5 +82,6 @@ module.exports = {
     USER_NEW,
     USER_GET,
     USER_WAIFUS_GET,
-    USER_CUSTOM_HAREMTITLE
+    USER_CUSTOM_HAREM_TITLE,
+    USER_CUSTOM_HAREM_COLOR
 };

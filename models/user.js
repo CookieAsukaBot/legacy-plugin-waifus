@@ -17,9 +17,10 @@ const schema = new Schema({
         // art: {
         //     type: populate
         // },
-        // color: {
-        //     type: String
-        // },
+        haremColor: {
+            type: String,
+            default: '#fb94ff'
+        },
         haremTitle: {
             type: String,
             default: 'Mi harem'

@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 
 // Importar cosas locales
-const { USER_GET, USER_WAIFUS_GET, USER_CUSTOM_HAREMTITLE } = require('../controller/user.controller');
+const { USER_GET, USER_WAIFUS_GET, USER_CUSTOM_HAREM_TITLE, USER_CUSTOM_HAREM_COLOR } = require('../controller/user.controller');
 const { WAIFU_DIVORCE, WAIFU_GIFT } = require('../controller/waifu.controller');
 const { GET_AVATAR_URL } = require('../helpers/discord-utils');
 
@@ -17,14 +17,15 @@ module.exports = {
     name: 'harem',
     category: 'Waifu',
     description: 'Puedes ver/modificar tu harem, regalar o divorciarte.',
-    usage: '[divorciar | regalar @mención | nombre]',
+    usage: '[divorciar | regalar @mención | nombre | color]',
     async execute (message, args, bot) {
         let action = {
             mention: false,
             divorce: false,
             gift: false,
             personalization: {
-                haremTitle: false
+                haremTitle: false,
+                haremColor: false
             }
         };
 
@@ -32,7 +33,8 @@ module.exports = {
         const MENTION = message.mentions.members.first();
 
         // Comprobar args
-        if (args[0] == 'name' || args[0] == 'nombre') action.personalization.haremTitle = true;
+        if (args[0] == 'name' || args[0] == 'nombre' || args[0] == 'title' || args[0] == 'titulo' || args[0] == 'título') action.personalization.haremTitle = true;
+        if (args[0] == 'color') action.personalization.haremColor = true;
         if (args[0] == 'divorce' || args[0] == 'divorcio' || args[0] == 'divorciar') action.divorce = true;
         if (MENTION) {
             // Regalar
@@ -59,15 +61,27 @@ module.exports = {
         });
 
         // Comprobar personalización
+        let userCustomizationError = "Para cambiar el %action% de tu Harem necesitas de agregar un %action%. <:redTick:908190230694207488>";
+        let userCustomizationSuccess = "Se guardó el %action% para tu Harem. <:greenTick:908190230731980850>";
         if (action.personalization.haremTitle) {
             // Obtener
             const getTitle = args.join(" ").split(args[0])[1].trim(); // Remueve el primer arg[0] (name/hombre)
             // Comprobar
-            if (getTitle.length <= 0) return message.reply(`Para cambiar el título de tu Harem necesitas de agregar un título. <:redTick:908190230694207488>`);
+            if (getTitle.length <= 0) return message.reply(userCustomizationError.replace("%action%", "título"));
             // Actualizar
-            await USER_CUSTOM_HAREMTITLE(message.guild.id, message.author.id, getTitle);
+            await USER_CUSTOM_HAREM_TITLE(message.guild.id, message.author.id, getTitle);
             // Responder
-            return message.reply('Se guardó el título para tu Harem. <:greenTick:908190230731980850>');
+            return message.reply(userCustomizationSuccess.replace("%action%", "título"));
+        };
+        if (action.personalization.haremColor) {
+            // Obtener
+            const getColor = args[1];
+            // Comprobar
+            if (getColor.length <= 0) return message.reply(userCustomizationError.replace("%action%", "color"));
+            // Actualizar
+            await USER_CUSTOM_HAREM_COLOR(message.guild.id, message.author.id, getColor);
+            // Responder
+            return message.reply(userCustomizationSuccess.replace("%action%", "color"));
         };
 
         // Contadores
@@ -76,13 +90,19 @@ module.exports = {
 
         // Embed
         let embed = new MessageEmbed()
-            .setColor(settings.color) // Después personalizable por el usuario
+            .setColor(settings.color)
             .setImage(`${waifus[page].waifu.url}`)
             .setFooter(`0/${waifusCount}`)
             .setTimestamp(`${waifus[page].updatedAt}`);
         // Comprobar si hay mención
-        if (action.mention == true) embed.setAuthor(`Harem de ${MENTION.user.username}`, GET_AVATAR_URL(MENTION.user));
-        if (action.mention == false) embed.setAuthor(user.customization.haremTitle, message.author.displayAvatarURL({ dynamic: true }));
+        if (action.mention == true) {
+            embed.setAuthor(`Harem de ${MENTION.user.username}`, GET_AVATAR_URL(MENTION.user));
+        };
+        if (action.mention == false) {
+            embed.setColor(user.customization.haremColor);
+            embed.setAuthor(user.customization.haremTitle, message.author.displayAvatarURL({ dynamic: true }));
+        };
+            
         
         // Comprobar si es arte o personaje
         if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
