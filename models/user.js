@@ -10,12 +10,32 @@ const schema = new Schema({
         type: String,
         required: true
     },
-    // waifu: {
-    // },
+    customization: {
+        // waifu: {
+        //     type: populate
+        // },
+        // art: {
+        //     type: populate
+        // },
+        // color: {
+        //     type: String
+        // },
+        haremTitle: {
+            type: String,
+            default: 'Mi harem'
+        },
+        // rate: {
+        //     type: Number // preffer arts over characters
+        // },
+    },
     rolls: {
         type: Number,
         default: 10
     },
+    // extraRolls: {
+    //     type: Number,
+    //     default: 0
+    // },
     usedRolls: {
         type: Number,
         default: 0
@@ -23,11 +43,7 @@ const schema = new Schema({
     canClaim: {
         type: Boolean,
         default: true
-    },
-    // Custom
-    // customColor: {
-    //     type: String
-    // },
+    }
 }, {
     timestamps: true
 });

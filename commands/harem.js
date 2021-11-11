@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 
 // Importar cosas locales
-const { USER_GET, USER_WAIFUS_GET } = require('../controller/user.controller');
+const { USER_GET, USER_WAIFUS_GET, USER_CUSTOM_HAREMTITLE } = require('../controller/user.controller');
 const { WAIFU_DIVORCE, WAIFU_GIFT } = require('../controller/waifu.controller');
 const { GET_AVATAR_URL } = require('../helpers/discord-utils');
 
@@ -16,19 +16,23 @@ const settings = {
 module.exports = {
     name: 'harem',
     category: 'Waifu',
-    description: 'Puedes ver tu harem, regalar o divorciarte.',
-    usage: '[divorciar | regalar @mención]',
+    description: 'Puedes ver/modificar tu harem, regalar o divorciarte.',
+    usage: '[divorciar | regalar @mención | nombre]',
     async execute (message, args, bot) {
         let action = {
             mention: false,
             divorce: false,
-            gift: false
+            gift: false,
+            personalization: {
+                haremTitle: false
+            }
         };
 
         // Comprobar si hay una mención
         const MENTION = message.mentions.members.first();
 
         // Comprobar args
+        if (args[0] == 'name' || args[0] == 'nombre') action.personalization.haremTitle = true;
         if (args[0] == 'divorce' || args[0] == 'divorcio' || args[0] == 'divorciar') action.divorce = true;
         if (MENTION) {
             // Regalar
@@ -54,6 +58,18 @@ module.exports = {
             content: `<@${message.author.id}>, no hay ninguna waifu reclamada!`
         });
 
+        // Comprobar personalización
+        if (action.personalization.haremTitle) {
+            // Obtener
+            const getTitle = args.join(" ").split(args[0])[1].trim(); // Remueve el primer arg[0] (name/hombre)
+            // Comprobar
+            if (getTitle.length <= 0) return message.reply(`Para cambiar el título de tu Harem necesitas de agregar un título. <:redTick:908190230694207488>`);
+            // Actualizar
+            await USER_CUSTOM_HAREMTITLE(message.guild.id, message.author.id, getTitle);
+            // Responder
+            return message.reply('Se guardó el título para tu Harem. <:greenTick:908190230731980850>');
+        };
+
         // Contadores
         let waifusCount = waifus.length - 1;
         let page = 0;
@@ -66,7 +82,7 @@ module.exports = {
             .setTimestamp(`${waifus[page].updatedAt}`);
         // Comprobar si hay mención
         if (action.mention == true) embed.setAuthor(`Harem de ${MENTION.user.username}`, GET_AVATAR_URL(MENTION.user));
-        if (action.mention == false) embed.setAuthor(`Harem de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
+        if (action.mention == false) embed.setAuthor(user.customization.haremTitle, message.author.displayAvatarURL({ dynamic: true }));
         
         // Comprobar si es arte o personaje
         if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);

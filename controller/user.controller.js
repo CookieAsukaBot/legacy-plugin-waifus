@@ -53,8 +53,24 @@ const USER_WAIFUS_GET = async (guild, userID) => {
     };
 };
 
+// Personalización
+const USER_CUSTOM_HAREMTITLE = async (guild, userID, newTitle) => {
+    try {
+        await User.updateOne({ guild, userID }, {
+            customization: {
+                haremTitle: newTitle
+            }
+        });
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    };
+};
+
 module.exports = {
     USER_NEW,
     USER_GET,
-    USER_WAIFUS_GET
+    USER_WAIFUS_GET,
+    USER_CUSTOM_HAREMTITLE
 };
