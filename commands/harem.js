@@ -300,7 +300,7 @@ module.exports = {
                                     usersCancelGift.push(user.id);
                                     if (usersCancelGift.includes(message.author.id) || usersCancelGift.includes(MENTION.user.id)) {
                                         message.channel.send({
-                                            content: `Se canceló el regalo.`
+                                            content: `${message.author.tag} & ${MENTION.user.tag}, **se canceló** el regalo.`
                                         });
                                         // Desactivar collectors
                                         await collectorGift.stop();
