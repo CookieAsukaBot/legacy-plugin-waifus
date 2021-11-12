@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const { USER_GET } = require('../controller/user.controller');
 const { GET_COUNTDOWN_TIME } = require('../helpers/time-things');
 
 module.exports = {
@@ -7,16 +8,19 @@ module.exports = {
     description: 'Muestra en cuánto tiempo son los reinicios.',
     aliases: ['tu', 'tiempo'],
     async execute (message, args, bot) {
+        // Buscar usuario
+        const user = await USER_GET(message);
+        if (user == false) return message.channel.send({ content: `ocurrió un error al intentar crear tu usuario!` });
+
         // Obtener tiempo
-        const cooldownRolls = GET_COUNTDOWN_TIME(bot.waifus_cooldown.rolls.timeLeft, true);
-        const cooldownClaims = GET_COUNTDOWN_TIME(bot.waifus_cooldown.claims.timeLeft, true);
+        const cooldownRolls = GET_COUNTDOWN_TIME(bot.waifus_cooldown.rolls.timeLeft);
+        const cooldownClaims = GET_COUNTDOWN_TIME(bot.waifus_cooldown.claims.timeLeft);
 
         // Embed
         const DESCRIPTION = `**Rolls**: ${cooldownRolls}. 🎲\n**Reclamación**: ${cooldownClaims}. 💖`;
         let embed = new MessageEmbed()
-            .setColor(process.env.BOT_COLOR)
+            .setColor(user.customization.haremColor)
             .setAuthor('♻️ Próximos reinicios')
-            // .setThumbnail() // waifu principal
             .setDescription(DESCRIPTION);
 
         // Responder

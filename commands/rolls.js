@@ -13,7 +13,7 @@ module.exports = {
         // Comprobar Usuario y Waifus
         const user = await USER_GET(message);
         if (user == false) return message.channel.send({ content: `ocurrió un error al intentar crear tu usuario!` });
-    
+
         // Contadores
         const ARTS = await Waifu.countDocuments({ guild: message.guild.id, userID: message.author.id, type: "ART" });
         const WAIFUS = await Waifu.countDocuments({ guild: message.guild.id, userID: message.author.id, type: "WAIFU" });
@@ -29,8 +29,9 @@ module.exports = {
 
         // Embed
         let embed = new MessageEmbed()
-            .setColor(process.env.BOT_COLOR)
+            .setColor(user.customization.haremColor)
             .setAuthor(`Estado de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
+            // .setThumbnail() // waifu principal
             .setDescription(description);
 
         // Responder
