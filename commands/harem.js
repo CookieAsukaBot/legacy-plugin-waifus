@@ -261,7 +261,7 @@ module.exports = {
                                 await msg.react('✅');
                                 await msg.react('❌');
                                 let collectorAccept = await msg.createReactionCollector({
-                                    filter: (reaction, user) => reaction.emoji.name === '✅',
+                                    filter: (reaction, user) => reaction.emoji.name === '✅' && user.id !== message.client.user.id,
                                     idle: settings.duration * 1000, // x por 1 segundo
                                 });
                                 collectorAccept.on('collect', async (reaction, user) => {
@@ -293,7 +293,7 @@ module.exports = {
                                     };
                                 });
                                 let collectorCancel = await msg.createReactionCollector({
-                                    filter: (reaction, user) => reaction.emoji.name === '❌',
+                                    filter: (reaction, user) => reaction.emoji.name === '❌' && user.id !== message.client.user.id,
                                     idle: settings.duration * 1000, // x por 1 segundo
                                 });
                                 collectorCancel.on('collect', async (reaction, user) => {
