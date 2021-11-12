@@ -11,7 +11,6 @@ const User = require('../models/user');
 
 const settings = {
     cooldownClaim: 60, // segundos
-    colorClaimed: '#f596ff'
 };
 
 module.exports = {
@@ -61,7 +60,7 @@ module.exports = {
             // Comprobar si tiene dueño (si la id del servidor coincide)
             if (image.owner !== false && image.owner.guild == message.guild.id) {
                 const fetchUser = await FETCH_USER_BY_ID(bot, image.owner.userID);
-                embed.setColor(settings.colorClaimed);
+                embed.setColor(fetchUser.customization.haremColor);
                 embed.setAuthor(`Waifu de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
                 return message.channel.send({ embeds: [embed] });
             };
@@ -109,6 +108,7 @@ module.exports = {
                     if (findUser.canClaim == true) {
                         // Reclamar
                         collector.rollStatus.user = user;
+                        collector.rollStatus.user.haremColor = findUser.customization.haremColor;
                         collector.rollStatus.claimed = true;
                         // Actualizar usuario (canClaim) y detener collector
                         await User.updateOne({ userID: user.id, guild: message.guild.id }, { canClaim: false });
@@ -133,7 +133,7 @@ module.exports = {
                         if (CLAIM_STATUS == true) {
                             // Nuevo embed: estado reclamado
                             embed.setAuthor(`Waifu reclamada por ${collector.rollStatus.user.username}`, GET_AVATAR_URL(collector.rollStatus.user));
-                            embed.setColor(settings.colorClaimed)
+                            embed.setColor(collector.rollStatus.user.haremColor);
                             // Editar mensaje
                             await msg.edit({ embeds: [embed] });
                             // Enviar mensaje
