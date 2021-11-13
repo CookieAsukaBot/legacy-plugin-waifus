@@ -61,13 +61,15 @@ module.exports = {
         });
 
         // Comprobar personalización
-        let userCustomizationError = "Para cambiar el %action% de tu Harem necesitas de agregar un %action%. <:redTick:908190230694207488>";
-        let userCustomizationSuccess = "Se guardó el %action% para tu Harem. <:greenTick:908190230731980850>";
+        let userCustomizationError = "Para cambiar el __%action%__ de tu **Harem** necesitas de agregar un __%action%__. <:redTick:908190230694207488>";
+        let userCustomizationTitleError = "Has superado el **límite de caracteres** del título para tu **Harem** (__se permite 50 caracteres como máximo__). <:redTick:908190230694207488>";
+        let userCustomizationSuccess = "Se guardó el **%action%** para tu **Harem**. <:greenTick:908190230731980850>";
         if (action.personalization.haremTitle) {
             // Obtener
             const getTitle = args.join(" ").split(args[0])[1].trim(); // Remueve el primer arg[0] (name/hombre)
             // Comprobar
-            if (getTitle.length <= 0) return message.reply(userCustomizationError.replace("%action%", "título"));
+            if (getTitle.length <= 0) return message.reply(userCustomizationError.replace(/%action%/g, "título"));
+            if (getTitle.length > 50) return message.reply(userCustomizationTitleError);
             // Actualizar
             await USER_CUSTOM_HAREM_TITLE(message.guild.id, message.author.id, getTitle);
             // Responder
@@ -77,7 +79,7 @@ module.exports = {
             // Obtener
             const getColor = args[1];
             // Comprobar
-            if (getColor.length <= 0) return message.reply(userCustomizationError.replace("%action%", "color"));
+            if (getColor.length <= 0) return message.reply(userCustomizationError.replace(/%action%/g, "color"));
             // Actualizar
             await USER_CUSTOM_HAREM_COLOR(message.guild.id, message.author.id, getColor);
             // Responder
