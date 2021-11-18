@@ -48,6 +48,35 @@ const GIFT = async (message, args) => {
             // Responder
             message.reply(`\`${RES.posts[0].id}\` (${RES.posts[0].booru.domain}) se entregó a **${MENTION.user.tag}**!`);
             break;
+        case 'danbooru.donmai.us':
+            // Petición
+            RES = await Booru.search('danbooru', [`id:${ID}`], {});
+            // Comprobar si se encontró el post
+            if (RES.posts[0].id == undefined) return message.reply('no se encontró el post.');
+
+            // Comprobar si está reclamada
+            IS_CLAIMED = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(message.guild.id, RES.posts[0].id, RES.posts[0].id);
+            // Si está reclamada
+            if (IS_CLAIMED !== false) return message.reply('esta Waifu está reclamada!');
+
+            // Regalar
+            CLAIM_STATUS = await WAIFU_CLAIM({
+                image: {
+                    domain: RES.posts[0].booru.domain,
+                    id: RES.posts[0].id,
+                    url: RES.posts[0].fileUrl,
+                    type: "ART"
+                },
+                user: MENTION,
+                guild: message.guild.id // GUILD
+            });
+
+            // Comprobar estado del regalo
+            if (CLAIM_STATUS == false) return message.reply('ocurrió un problema en la base de datos.');
+
+            // Responder
+            message.reply(`\`${RES.posts[0].id}\` (${RES.posts[0].booru.domain}) se entregó a **${MENTION.user.tag}**!`);
+            break;
         case 'gelbooru.com':
             // Petición
             RES = await Booru.search('gelbooru', [`id:${ID}`], {});
