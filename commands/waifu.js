@@ -9,6 +9,12 @@ const { GET_COUNTDOWN_TIME } = require('../helpers/time-things');
 // Modelos
 const User = require('../models/user');
 
+const capitalizeFirstLetter = (string) => {
+    string = string.toLowerCase();
+    if (string == "art") string += "e";
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 const settings = {
     cooldownClaim: 60, // segundos
 };
@@ -61,7 +67,7 @@ module.exports = {
             if (image.owner !== false && image.owner.guild == message.guild.id) {
                 const fetchUser = await FETCH_USER_BY_ID(bot, image.owner.userID);
                 embed.setColor(fetchUser.customization.haremColor);
-                embed.setAuthor(`Waifu de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
+                embed.setAuthor(`${capitalizeFirstLetter(image.type)} de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
                 return message.channel.send({ embeds: [embed] });
             };
 
@@ -132,19 +138,19 @@ module.exports = {
                         // Comprobar si se guardó en la DB (comprobar si se reclamó)
                         if (CLAIM_STATUS == true) {
                             // Nuevo embed: estado reclamado
-                            embed.setAuthor(`Waifu reclamada por ${collector.rollStatus.user.username}`, GET_AVATAR_URL(collector.rollStatus.user));
+                            embed.setAuthor(`${capitalizeFirstLetter(collector.rollStatus.image.type)} obtenida por ${collector.rollStatus.user.username}`, GET_AVATAR_URL(collector.rollStatus.user));
                             embed.setColor(collector.rollStatus.user.haremColor);
                             // Editar mensaje
                             await msg.edit({ embeds: [embed] });
                             // Enviar mensaje
                             await msg.reply({
                                 // después personalizar
-                                content: `💖 ¡**${collector.rollStatus.user.username}** reclamó su waifu! 💖`
+                                content: `💖 ¡**${collector.rollStatus.user.username}** reclamó su ${capitalizeFirstLetter(collector.rollStatus.image.type)}! 💖`
                             });
                         } else if (CLAIM_STATUS == false) {
                             // Enviar mensaje
                             await msg.reply({
-                                content: `Ocurrió un error al reclamar la Waifu en la DB. 💥`
+                                content: `Ocurrió un error al reclamar ${capitalizeFirstLetter(collector.rollStatus.image.type)} en la DB. 💥`
                             });
                         };
                     };
