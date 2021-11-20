@@ -6,11 +6,13 @@ const GIFT = async (message, args) => {
     const MENTION = message.mentions.members.first();
     const DOMAIN = args[1].trim(); // safebooru
     const ID = args[2].trim(); // 00000
+    let serverID = args[3].trim();
 
     // Comprobar campos
     if (!MENTION) return;
     if (!DOMAIN.length) return;
     if (!ID.length) return;
+    if (serverID.startsWith("<@")) serverID = message.guild.id;
 
     // Variables
     let RES = false;
@@ -26,7 +28,7 @@ const GIFT = async (message, args) => {
             if (RES.posts[0].id == undefined) return message.reply('no se encontró el post.');
 
             // Comprobar si está reclamada
-            IS_CLAIMED = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(message.guild.id, RES.posts[0].id, RES.posts[0].id);
+            IS_CLAIMED = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(serverID, RES.posts[0].id, RES.posts[0].id);
             // Si está reclamada
             if (IS_CLAIMED !== false) return message.reply('esta Waifu está reclamada!');
 
@@ -39,7 +41,7 @@ const GIFT = async (message, args) => {
                     type: "ART"
                 },
                 user: MENTION,
-                guild: message.guild.id // GUILD
+                guild: serverID
             });
 
             // Comprobar estado del regalo
@@ -55,7 +57,7 @@ const GIFT = async (message, args) => {
             if (RES.posts[0].id == undefined) return message.reply('no se encontró el post.');
 
             // Comprobar si está reclamada
-            IS_CLAIMED = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(message.guild.id, RES.posts[0].id, RES.posts[0].id);
+            IS_CLAIMED = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(serverID, RES.posts[0].id, RES.posts[0].id);
             // Si está reclamada
             if (IS_CLAIMED !== false) return message.reply('esta Waifu está reclamada!');
 
@@ -68,7 +70,7 @@ const GIFT = async (message, args) => {
                     type: "ART"
                 },
                 user: MENTION,
-                guild: message.guild.id // GUILD
+                guild: serverID
             });
 
             // Comprobar estado del regalo
@@ -84,7 +86,7 @@ const GIFT = async (message, args) => {
             if (RES.posts[0].id == undefined) return message.reply('no se encontró el post.');
 
             // Comprobar si está reclamada
-            IS_CLAIMED = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(message.guild.id, RES.posts[0].id, RES.posts[0].id);
+            IS_CLAIMED = await WAIFU_SEARCH_BY_ID_AND_DOMAIN(serverID, RES.posts[0].id, RES.posts[0].id);
             // Si está reclamada
             if (IS_CLAIMED !== false) return message.reply('esta Waifu está reclamada!');
 
@@ -97,7 +99,7 @@ const GIFT = async (message, args) => {
                     type: "ART"
                 },
                 user: MENTION,
-                guild: message.guild.id // GUILD
+                guild: serverID
             });
 
             // Comprobar estado del regalo
@@ -132,7 +134,7 @@ module.exports = {
     roles: ['admin'],
     args: true,
     description: 'Comando de administrador.',
-    usage: '[gift]', // |remove|random|api
+    usage: '[gift (domain, postID, guildID, @user)]', // |remove|random|api
     aliases: ['adminwaifus'],
     async execute (message, args, bot) {
         switch (args[0]) {
