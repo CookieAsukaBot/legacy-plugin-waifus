@@ -26,6 +26,12 @@ module.exports = {
             personalization: {
                 haremTitle: false,
                 haremColor: false
+            },
+            variables: {
+                gift: ['gift', 'give', 'regalo', 'regalar'],
+                name: ['nombre', 'name', 'title', 'titulo', 'título'],
+                color: ['color'],
+                divorce: ['divorce', 'divorcio', 'divorciar', 'eliminar', 'remover']
             }
         };
 
@@ -33,15 +39,16 @@ module.exports = {
         const MENTION = message.mentions.members.first();
 
         // Comprobar args
-        if (args[0] == 'name' || args[0] == 'nombre' || args[0] == 'title' || args[0] == 'titulo' || args[0] == 'título') action.personalization.haremTitle = true;
-        if (args[0] == 'color') action.personalization.haremColor = true;
-        if (args[0] == 'divorce' || args[0] == 'divorcio' || args[0] == 'divorciar') action.divorce = true;
+        if (action.variables.name.includes(args[0])) action.personalization.haremTitle = true;
+        if (action.variables.color.includes(args[0])) action.personalization.haremColor = true;
+        if (action.variables.divorce.includes(args[0])) action.divorce = true;
+        // Comprobar mención
         if (MENTION) {
-            // Regalar
-            if (args[0] == 'gift' || args[0] == 'give' || args[0] == 'regalo' || args[0] == 'regalar') {
+            // Si incluye gift de argumento
+            if (action.variables.gift.includes(args[0])) {
                 action.gift = true;
             } else {
-                // Ver
+                // De lo contrario, solo ver su harem
                 action.mention = true;
             };
         };
@@ -104,8 +111,8 @@ module.exports = {
             embed.setColor(user.customization.haremColor);
             embed.setAuthor(user.customization.haremTitle, message.author.displayAvatarURL({ dynamic: true }));
         };
-            
-        
+
+
         // Comprobar si es arte o personaje
         if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
         if (waifus[page].type == "WAIFU") embed.setDescription(`**${waifus[page].waifu.name}**\n${waifus[page].waifu.anime}`);
