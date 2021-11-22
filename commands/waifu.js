@@ -72,7 +72,7 @@ module.exports = {
             };
 
             embed.setColor(process.env.BOT_COLOR);
-            embed.setAuthor(`Random Waifu para ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
+            embed.setAuthor(`Random ${capitalizeFirstLetter(image.type)} para ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
             // Responder
             message.channel.send({
                 embeds: [embed]
