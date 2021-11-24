@@ -257,7 +257,7 @@ const API = async (message, args, bot) => {
 
 module.exports = {
     name: 'adminwaifu',
-    category: 'Waifus',
+    category: 'Waifu',
     roles: ['admin'],
     args: true,
     description: 'Comando de administrador.',
