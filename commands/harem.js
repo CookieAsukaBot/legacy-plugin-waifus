@@ -179,6 +179,7 @@ module.exports = {
                 // Editar mensaje
                 await msg.edit({ embeds: [embed] });
             });
+            collectorArrows.on('end', async () => await msg.reactions.removeAll());
 
             // Acciones
             switch (true) {
