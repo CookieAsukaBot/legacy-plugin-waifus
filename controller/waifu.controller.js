@@ -66,12 +66,11 @@ const RANDOM_ART_DANBOORU = async (guild) => {
         // Query
         let query = {
             limit: 1,
-            random: true,
             showUnavailable: true
         };
 
         // Petición
-        let res = await Booru.search('danbooru', ['rating:safe -video'], query);
+        let res = await Booru.search('danbooru', ['rating:safe random:1 -video'], query);
 
         // Modelo
         let image = {
