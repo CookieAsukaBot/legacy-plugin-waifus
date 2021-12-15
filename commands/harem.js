@@ -59,8 +59,13 @@ module.exports = {
 
         // Buscar Waifus
         let waifus = false;
-        if (action.mention == true) waifus = await USER_WAIFUS_GET(message.guild.id, MENTION.user.id);
-        if (action.mention == false) waifus = await USER_WAIFUS_GET(message.guild.id, message.author.id);
+        let mentionInfo;
+        if (action.mention == true) {
+            mentionInfo = await USER_GET({ author: { id: MENTION.user.id }, guild: { id: message.guild.id } });
+            waifus = await USER_WAIFUS_GET(message.guild.id, MENTION.user.id);
+        } else {
+            waifus = await USER_WAIFUS_GET(message.guild.id, message.author.id)
+        };
 
         // Comprobar
         if (!waifus.length) return message.channel.send({
@@ -105,7 +110,8 @@ module.exports = {
             .setTimestamp(`${waifus[page].updatedAt}`);
         // Comprobar si hay mención
         if (action.mention == true) {
-            embed.setAuthor(`Harem de ${MENTION.user.username}`, GET_AVATAR_URL(MENTION.user));
+            embed.setColor(mentionInfo.customization.haremColor);
+            embed.setAuthor(mentionInfo.customization.haremTitle, GET_AVATAR_URL(MENTION.user));
         };
         if (action.mention == false) {
             embed.setColor(user.customization.haremColor);
