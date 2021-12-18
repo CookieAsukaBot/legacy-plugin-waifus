@@ -65,9 +65,12 @@ module.exports = {
 
             // Comprobar si tiene dueño (si la id del servidor coincide)
             if (image.owner !== false && image.owner.guild == message.guild.id) {
-                const fetchUser = await FETCH_USER_BY_ID(bot, image.owner.userID);
-                embed.setColor(fetchUser.customization.haremColor);
+                let fetchUser = await FETCH_USER_BY_ID(bot, image.owner.userID); // Datos de Discord
+                let fetchUserInfo = await USER_GET({ author: { id: fetchUser.id }, guild: { id: message.guild.id } }); // Datos de MongoDB
+
+                embed.setColor(fetchUserInfo.customization.haremColor);
                 embed.setAuthor(`${capitalizeFirstLetter(image.type)} de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
+
                 return message.channel.send({ embeds: [embed] });
             };
 
