@@ -61,7 +61,9 @@ module.exports = {
             let embed = new MessageEmbed()
                 .setDescription(image.description)
                 .setImage(image.url)
-                .setFooter(`${image.domain} | ${image.id}`);
+                .setFooter({
+                    text: `${image.domain} | ${image.id}`
+                });
 
             // Comprobar si tiene dueño (si la id del servidor coincide)
             if (image.owner !== false && image.owner.guild == message.guild.id) {
@@ -69,13 +71,19 @@ module.exports = {
                 let fetchUserInfo = await USER_GET({ author: { id: fetchUser.id }, guild: { id: message.guild.id } }); // Datos de MongoDB
 
                 embed.setColor(fetchUserInfo.customization.haremColor);
-                embed.setAuthor(`${capitalizeFirstLetter(image.type)} de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
+                embed.setAuthor({
+                    name: `${capitalizeFirstLetter(image.type)} de ${fetchUser.username}`,
+                    iconURL: GET_AVATAR_URL(fetchUser)
+                });
 
                 return message.channel.send({ embeds: [embed] });
             };
 
             embed.setColor(process.env.BOT_COLOR);
-            embed.setAuthor(`Random ${capitalizeFirstLetter(image.type)} para ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
+            embed.setAuthor({
+                name: `Random ${capitalizeFirstLetter(image.type)} para ${message.author.username}`,
+                iconURL: message.author.displayAvatarURL({ dynamic: true })
+            });
             // Responder
             message.channel.send({
                 embeds: [embed]
@@ -141,7 +149,10 @@ module.exports = {
                         // Comprobar si se guardó en la DB (comprobar si se reclamó)
                         if (CLAIM_STATUS == true) {
                             // Nuevo embed: estado reclamado
-                            embed.setAuthor(`${capitalizeFirstLetter(collector.rollStatus.image.type)} obtenida por ${collector.rollStatus.user.username}`, GET_AVATAR_URL(collector.rollStatus.user));
+                            embed.setAuthor({
+                                name: `${capitalizeFirstLetter(collector.rollStatus.image.type)} obtenida por ${collector.rollStatus.user.username}`,
+                                iconURL: GET_AVATAR_URL(collector.rollStatus.user)
+                            });
                             embed.setColor(collector.rollStatus.user.haremColor);
                             // Editar mensaje
                             await msg.edit({ embeds: [embed] });

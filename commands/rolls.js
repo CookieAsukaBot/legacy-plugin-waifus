@@ -30,7 +30,10 @@ module.exports = {
         // Embed
         let embed = new MessageEmbed()
             .setColor(user.customization.haremColor)
-            .setAuthor(`Estado de ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
+            .setAuthor({
+                name: `Estado de ${message.author.username}`,
+                iconURL: message.author.displayAvatarURL({ dynamic: true })
+            })
             // .setThumbnail() // waifu principal
             .setDescription(description);
 

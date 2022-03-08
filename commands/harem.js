@@ -106,16 +106,24 @@ module.exports = {
         let embed = new MessageEmbed()
             .setColor(settings.color)
             .setImage(`${waifus[page].waifu.url}`)
-            .setFooter(`0/${waifusCount}`)
+            .setFooter({
+                text: `0/${waifusCount}`
+            })
             .setTimestamp(`${waifus[page].updatedAt}`);
         // Comprobar si hay mención
         if (action.mention == true) {
             embed.setColor(mentionInfo.customization.haremColor);
-            embed.setAuthor(mentionInfo.customization.haremTitle, GET_AVATAR_URL(MENTION.user));
+            embed.setAuthor({
+                name: mentionInfo.customization.haremTitle,
+                iconURL: GET_AVATAR_URL(MENTION.user)
+            });
         };
         if (action.mention == false) {
             embed.setColor(user.customization.haremColor);
-            embed.setAuthor(user.customization.haremTitle, message.author.displayAvatarURL({ dynamic: true }));
+            embed.setAuthor({
+                name: user.customization.haremTitle,
+                iconURL: message.author.displayAvatarURL({ dynamic: true })
+            });
         };
 
 
@@ -176,7 +184,9 @@ module.exports = {
 
                 // Editar embed
                 embed.setImage(`${waifus[page].waifu.url}`);
-                embed.setFooter(`${page}/${waifusCount}`);
+                embed.setFooter({
+                    text: `${page}/${waifusCount}`
+                });
                 embed.setTimestamp(`${waifus[page].updatedAt}`);
                 // Comprobar si es arte o personaje
                 if (waifus[page].type == "ART") embed.setDescription(`${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`);
@@ -202,11 +212,16 @@ module.exports = {
                         // Embed
                         let divorceEmbed = new MessageEmbed()
                             .setColor('GREEN')
-                            .setAuthor(`Felicidades, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
+                            .setAuthor({
+                                name: `Felicidades, ${message.author.username}`,
+                                iconURL: message.author.displayAvatarURL({ dynamic: true })
+                            })
                             .setDescription(`Te has divorciado\n${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`)
                             .setThumbnail(`${waifus[page].waifu.url}`)
                             .setImage('https://c.tenor.com/KuqLqBEfs6AAAAAC/huevos-a-huevo.gif')
-                            .setFooter(`❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`);
+                            .setFooter({
+                                text: `❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`
+                            });
 
                         // Enviar confirmación
                         message.reply('¿Quieres **divorciarte**?')
@@ -223,7 +238,10 @@ module.exports = {
                                     // Comprobar
                                     if (divorce == false) {
                                         divorceEmbed.setColor('RED');
-                                        divorceEmbed.setAuthor(`Oh no, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
+                                        divorceEmbed.setAuthor({
+                                            name: `Oh no, ${message.author.username}`,
+                                            iconURL: message.author.displayAvatarURL({ dynamic: true })
+                                        });
                                         divorceEmbed.setDescription('Ocurrió un error al intentar divorciarte');
                                         divorceEmbed.setImage('https://c.tenor.com/DeK0sJPGEDIAAAAC/jason-bateman-con-una-chingada.gif');
                                     };
@@ -263,11 +281,16 @@ module.exports = {
                         // Embed
                         let giftEmbed = new MessageEmbed()
                             .setColor('PURPLE')
-                            .setAuthor(`Has regalado, ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
+                            .setAuthor({
+                                name: `Has regalado, ${message.author.username}`,
+                                iconURL: message.author.displayAvatarURL({ dynamic: true })
+                            })
                             .setDescription(`Tu regalo se entregó a **${MENTION.user.username}**\n${waifus[page].waifu.domain} | ${waifus[page].waifu.id}`)
                             .setThumbnail(`${waifus[page].waifu.url}`)
                             .setImage('https://c.tenor.com/9VlbkbzetVUAAAAC/present-for-you.gif')
-                            .setFooter(`❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`);
+                            .setFooter({
+                                text: `❗ Utiliza ${bot.prefix}${this.name} para volver a mirar tu lista`
+                            });
 
                         // Enviar confirmación
                         let usersGift = [];

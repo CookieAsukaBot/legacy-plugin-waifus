@@ -1,9 +1,9 @@
-const path = require('path');
+const path = require('node:path');
 
 module.exports = {
     name: 'Waifus',
-    version: '1.6.7',
-    cookiebot: '1.0.0',
+    version: '1.6.8',
+    cookiebot: '1.2.0',
     description: '¡Plugin oficial para obtener artes aleatorios y reclamarlos!',
     dependencies: ['booru', 'nanoid', 'canvas'],
     enabled: true,

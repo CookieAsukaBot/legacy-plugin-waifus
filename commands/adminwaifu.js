@@ -154,18 +154,26 @@ const RANDOM = async (message, args, bot) => {
     let embed = new MessageEmbed()
         .setDescription(image.description)
         .setImage(image.url)
-        .setFooter(`${image.domain} | ${image.id}`);
+        .setFooter({
+            text: `${image.domain} | ${image.id}`
+        });
 
     // Comprobar si tiene dueño (si la id del servidor coincide)
     if (image.owner !== false && image.owner.guild == message.guild.id) {
         const fetchUser = await FETCH_USER_BY_ID(bot, image.owner.userID);
         embed.setColor(fetchUser.customization.haremColor);
-        embed.setAuthor(`${capitalizeFirstLetter(image.type)} de ${fetchUser.username}`, GET_AVATAR_URL(fetchUser));
+        embed.setAuthor({
+            name: `${capitalizeFirstLetter(image.type)} de ${fetchUser.username}`,
+            iconURL: GET_AVATAR_URL(fetchUser)
+        });
         return message.channel.send({ embeds: [embed] });
     };
 
     embed.setColor(process.env.BOT_COLOR);
-    embed.setAuthor(`Random Waifu para ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }));
+    embed.setAuthor({
+        name: `Random Waifu para ${message.author.username}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true })
+    });
 
     // Responder
     message.channel.send({
@@ -232,7 +240,10 @@ const RANDOM = async (message, args, bot) => {
                 // Comprobar si se guardó en la DB (comprobar si se reclamó)
                 if (CLAIM_STATUS == true) {
                     // Nuevo embed: estado reclamado
-                    embed.setAuthor(`${capitalizeFirstLetter(collector.rollStatus.image.type)} obtenida por ${collector.rollStatus.user.username}`, GET_AVATAR_URL(collector.rollStatus.user));
+                    embed.setAuthor({
+                        name: `${capitalizeFirstLetter(collector.rollStatus.image.type)} obtenida por ${collector.rollStatus.user.username}`,
+                        iconURL: GET_AVATAR_URL(collector.rollStatus.user)
+                    });
                     embed.setColor(collector.rollStatus.user.haremColor);
                     // Editar mensaje
                     await msg.edit({ embeds: [embed] });
@@ -282,7 +293,9 @@ module.exports = {
                 break;
 
             default:
-                message.reply(`ejemplo del comando \`${bot.prefix}${this.name} ${this.usage}\``);
+                message.reply({
+                    content: `ejemplo del comando \`${bot.prefix}${this.name} ${this.usage}\``
+                });
                 break;
         };
     }

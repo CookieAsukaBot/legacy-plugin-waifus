@@ -20,7 +20,9 @@ module.exports = {
         const DESCRIPTION = `**Rolls**: ${cooldownRolls}. 🎲\n**Reclamación**: ${cooldownClaims}. 💖`;
         let embed = new MessageEmbed()
             .setColor(user.customization.haremColor)
-            .setAuthor('♻️ Próximos reinicios')
+            .setAuthor({
+                name: '♻️ Próximos reinicios'
+            })
             .setDescription(DESCRIPTION);
 
         // Responder
