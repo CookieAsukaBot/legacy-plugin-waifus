@@ -225,10 +225,10 @@ module.exports = {
 
                         // Enviar confirmación
                         message.reply('¿Quieres **divorciarte**?')
-                            .then(async msg => {
-                                await msg.react('✅');
-                                await msg.react('❌');
-                                let collectorAccept = await msg.createReactionCollector({
+                            .then(async msgDivorce => {
+                                await msgDivorce.react('✅');
+                                await msgDivorce.react('❌');
+                                let collectorAccept = await msgDivorce.createReactionCollector({
                                     filter: (reaction, user) => reaction.emoji.name === '✅' && user.id === message.author.id,
                                     idle: settings.duration * 1000, // x por 1 segundo
                                 });
@@ -244,9 +244,17 @@ module.exports = {
                                         });
                                         divorceEmbed.setDescription('Ocurrió un error al intentar divorciarte');
                                         divorceEmbed.setImage('https://c.tenor.com/DeK0sJPGEDIAAAAC/jason-bateman-con-una-chingada.gif');
+                                    } else {
+                                        embed.setAuthor({
+                                            name: '💔 ¿Aquí hubo un amor...?'
+                                        });
+                                        embed.setColor('RED');
                                     };
 
                                     // Respodner
+                                    msg.edit({
+                                        embeds: [embed]
+                                    });
                                     message.channel.send({
                                         embeds: [divorceEmbed]
                                     });
@@ -254,7 +262,7 @@ module.exports = {
                                     await collectorCancel.stop();
                                     await collectorAccept.stop();
                                 });
-                                let collectorCancel = await msg.createReactionCollector({
+                                let collectorCancel = await msgDivorce.createReactionCollector({
                                     filter: (reaction, user) => reaction.emoji.name === '❌' && user.id === message.author.id,
                                     idle: settings.duration * 1000, // x por 1 segundo
                                 });
@@ -295,7 +303,7 @@ module.exports = {
                         // Enviar confirmación
                         let usersGift = [];
                         let usersCancelGift = [];
-                        message.reply(`¿Quieres **regalar** a ${MENTION.user.tag}?\nSe requiere que de **ambos confirmen** el regalo.`)
+                        message.reply(`¿Quieres **regalar** a ${MENTION.user.tag}?\nSe requiere de que **ambos confirmen** el regalo.`)
                             .then(async msg => {
                                 await msg.react('✅');
                                 await msg.react('❌');
