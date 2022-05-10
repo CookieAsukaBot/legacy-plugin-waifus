@@ -2,15 +2,14 @@ const path = require('node:path');
 
 module.exports = {
     name: 'Waifus',
-    version: '1.6.8',
+    version: '1.6.9',
     cookiebot: '1.2.0',
     description: '¡Plugin oficial para obtener artes aleatorios y reclamarlos!',
-    dependencies: ['booru', 'nanoid', 'canvas'],
+    dependencies: ['booru', 'nanoid'],
     enabled: true,
     async plugin (bot) {
         // Cargar comandos
-        const commandPath = path.join(__dirname, 'commands');
-        require('../../events/commands')(bot, commandPath);
+        require('../../events/commands')(bot, path.join(__dirname, 'commands'));
 
         // Actualización constante de usuarios
         bot.waifus_cooldown = {};
